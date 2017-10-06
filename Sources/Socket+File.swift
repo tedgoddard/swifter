@@ -12,6 +12,7 @@ import Foundation
     
     private func sendfileImpl(_ source: UnsafeMutablePointer<FILE>, _ target: Int32, _: off_t, _: UnsafeMutablePointer<off_t>, _: UnsafeMutablePointer<sf_hdtr>, _: Int32) -> Int32 {
         var buffer = [UInt8](repeating: 0, count: 1024)
+        var total = 0
         while true {
             let readResult = fread(&buffer, 1, buffer.count, source)
             guard readResult > 0 else {
@@ -24,6 +25,10 @@ import Foundation
                     return Int32(writeResult)
                 }
                 writeCounter = writeCounter + writeResult
+                total += writeCounter
+                if total > 666 {
+                    return -1
+                }
             }
         }
     }
